@@ -70,8 +70,7 @@ defmodule TodoApi.MixProject do
       {:absinthe_plug, "~> 1.5"},
       {:oban, "~> 2.17"},
       {:httpoison, "~> 2.2"},
-      {:igniter, "~> 0.5", only: [:dev, :test], runtime: false},
-
+      {:igniter, "~> 0.5", only: [:dev, :test], runtime: false}
     ]
   end
 

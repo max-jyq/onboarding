@@ -10,7 +10,8 @@ defmodule TodoApi.Application do
     children = [
       TodoApiWeb.Telemetry,
       TodoApi.Repo,
-      {Oban, Application.fetch_env!(:todo_api, Oban)}, # When phoenix starts, also start Oban
+      # When phoenix starts, also start Oban
+      {Oban, Application.fetch_env!(:todo_api, Oban)},
       {DNSCluster, query: Application.get_env(:todo_api, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: TodoApi.PubSub},
 
