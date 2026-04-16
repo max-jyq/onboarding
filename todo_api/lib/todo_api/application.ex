@@ -10,8 +10,10 @@ defmodule TodoApi.Application do
     children = [
       TodoApiWeb.Telemetry,
       TodoApi.Repo,
+      {Oban, Application.fetch_env!(:todo_api, Oban)},
       {DNSCluster, query: Application.get_env(:todo_api, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: TodoApi.PubSub},
+
       # Start a worker by calling: TodoApi.Worker.start_link(arg)
       # {TodoApi.Worker, arg},
       # Start to serve requests, typically the last entry
