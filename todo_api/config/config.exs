@@ -60,6 +60,7 @@ config :logger, :default_formatter,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Tell Oban how to find the repo and which plugins and queues to use
 config :todo_api, Oban,
   repo: TodoApi.Repo,
   plugins: [
