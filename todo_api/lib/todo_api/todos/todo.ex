@@ -22,5 +22,23 @@ defmodule TodoApi.Todos.Todo do
     # 从外部数据里挑出允许的字段，并尝试转换成正确类型
     |> cast(attrs, [:title, :estimated_time, :completed, :completed_at])
     |> validate_required([:title])
+    |> sync_completed_at()
+  end
+
+  defp sync_completed_at(changeset) do
+    case get_change(changeset, :completed) do
+      true ->
+        if is_nil(get_field(changeset, :completed_at)) do
+          put_change(changeset, :completed_at, DateTime.utc_now() |> DateTime.truncate(:second))
+        else
+          changeset
+        end
+
+      false ->
+        put_change(changeset, :completed_at, nil)
+
+      nil ->
+        changeset
+    end
   end
 end

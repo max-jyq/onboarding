@@ -16,7 +16,7 @@ defmodule TodoApi.Todos do
     Repo.all(from t in Todo, order_by: [asc: t.inserted_at])
   end
 
-  # 返回所有todos，但还没有完成的todo，按照创建时间省序
+  # 返回所有还没有完成的todo，按照创建时间省序
   def list_incomplete_todos do
     Repo.all(from t in Todo, where: t.completed == false, order_by: [asc: t.inserted_at])
   end
@@ -24,6 +24,10 @@ defmodule TodoApi.Todos do
   # 根据 id 获取单个 todo
   # 如果查不到，会直接抛错
   def get_todo!(id), do: Repo.get!(Todo, id)
+
+  # 根据 id 获取单个 todo
+  # 如果查不到，返回 nil
+  def get_todo(id), do: Repo.get(Todo, id)
 
   # 创建新的 todo
   # attrs 是外部传入的数据，默认值是空 map
@@ -51,10 +55,14 @@ defmodule TodoApi.Todos do
     update_todo(todo, %{completed: true, completed_at: DateTime.utc_now()})
   end
 
-  # 把一个todo标记为未完成，先检查是否是完成的，如果不是完成的，就不需要更新了，并记录完成时间
-  def mark_todo_incomplete(%Todo{} = todo) do
+  # 把一个todo标记为未完成，先检查是否是完成的，如果不是完成的，就不需要更新了，并记录预计完成时间
+  def mark_todo_incomplete(%Todo{} = todo, estimated_time) do
     if todo.completed do
-      update_todo(todo, %{completed: false, completed_at: nil})
+      update_todo(todo, %{
+        completed: false,
+        completed_at: nil,
+        estimated_time: estimated_time
+      })
     else
       {:ok, todo}
     end
