@@ -9,6 +9,7 @@ defmodule TodoApi.Repo.Migrations.CreateWeatherDays do
       timestamps()
     end
 
-     create unique_index(:weather_days, [:date]) # Ensure one entry per date
+    # Ensure one entry per date
+    create unique_index(:weather_days, [:date])
   end
 end

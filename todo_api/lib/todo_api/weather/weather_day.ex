@@ -19,6 +19,7 @@ defmodule TodoApi.Weather.WeatherDay do
     weather_day
     |> cast(attrs, [:date, :high_temp, :low_temp])
     |> validate_required([:date, :high_temp, :low_temp])
-    |> unique_constraint(:date) # Ensure one entry per date
+    # Ensure one entry per date
+    |> unique_constraint(:date)
   end
 end

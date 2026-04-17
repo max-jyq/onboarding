@@ -16,6 +16,11 @@ defmodule TodoApi.Todos do
     Repo.all(from t in Todo, order_by: [asc: t.inserted_at])
   end
 
+  # 返回所有todos，但还没有完成的todo，按照创建时间省序
+  def list_incomplete_todos do
+    Repo.all(from t in Todo, where: t.completed == false, order_by: [asc: t.inserted_at])
+  end
+
   # 根据 id 获取单个 todo
   # 如果查不到，会直接抛错
   def get_todo!(id), do: Repo.get!(Todo, id)
@@ -39,6 +44,34 @@ defmodule TodoApi.Todos do
   # 删除一个 todo
   def delete_todo(%Todo{} = todo) do
     Repo.delete(todo)
+  end
+
+  # 把一个todo标记为已完成，并记录完成时间
+  def mark_todo_completed(%Todo{} = todo) do
+    update_todo(todo, %{completed: true, completed_at: DateTime.utc_now()})
+  end
+
+  # 把一个todo标记为未完成，先检查是否是完成的，如果不是完成的，就不需要更新了，并记录完成时间
+  def mark_todo_incomplete(%Todo{} = todo) do
+    if todo.completed do
+      update_todo(todo, %{completed: false, completed_at: nil})
+    else
+      {:ok, todo}
+    end
+  end
+
+  # 所有已经overdue的todo，按照创建时间升序
+  def list_overdue_todos do
+    now = DateTime.utc_now()
+
+    Repo.all(
+      from t in Todo,
+        where:
+          t.completed == false and
+            not is_nil(t.estimated_time) and
+            t.estimated_time <= ^now,
+        order_by: [asc: t.estimated_time]
+    )
   end
 
   # 只生成 changeset，不真正写入数据库
