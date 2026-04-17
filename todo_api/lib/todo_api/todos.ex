@@ -1,4 +1,9 @@
 defmodule TodoApi.Todos do
+  @moduledoc """
+  Contains the todo domain logic, including CRUD operations and later any
+  todo-specific business rules.
+  """
+
   # 导入 Ecto.Query，后面写数据库查询时会用到里面的查询语法
   import Ecto.Query, warn: false
 

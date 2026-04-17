@@ -1,7 +1,8 @@
 defmodule TodoApi.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
-  @moduledoc false
+  @moduledoc """
+  Starts and supervises the main backend processes, such as Repo, Oban, PubSub,
+  and the Phoenix endpoint.
+  """
 
   use Application
 

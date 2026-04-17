@@ -1,4 +1,8 @@
 defmodule TodoApi.Todos.Todo do
+  @moduledoc """
+  Defines the schema and input validation rules for a single todo record.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -1,4 +1,8 @@
 defmodule TodoApi.Weather.WeatherDay do
+  @moduledoc """
+  Defines the schema and validation rules for one stored weather day record.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 
