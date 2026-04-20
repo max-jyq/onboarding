@@ -16,6 +16,29 @@ defmodule TodoApiWeb.GraphQLTest do
   }
   """
 
+  @todo_query """
+  query GetTodo($id: ID!) {
+    todo(id: $id) {
+      id
+      title
+      estimatedTime
+      completed
+      completedAt
+    }
+  }
+  """
+
+  @weather_day_query """
+  query GetWeatherDay($id: ID!) {
+    weatherDay(id: $id) {
+      id
+      date
+      highTemp
+      lowTemp
+    }
+  }
+  """
+
   @update_todo_mutation """
   mutation UpdateTodo($id: ID!, $input: TodoInput!) {
     updateTodo(id: $id, input: $input) {
@@ -142,6 +165,52 @@ defmodule TodoApiWeb.GraphQLTest do
       )
 
     assert %{"data" => %{"deleteTodo" => true}} = json_response(conn, 200)
+  end
+
+  test "fetches a single todo and weather day by id", %{conn: conn} do
+    {:ok, todo} =
+      Todos.create_todo(%{
+        "title" => "Trace a single record",
+        "estimated_time" => "2026-04-23T07:45:00Z"
+      })
+
+    {:ok, weather_day} =
+      Weather.create_weather_day(%{
+        "date" => "2026-04-23",
+        "high_temp" => 22.3,
+        "low_temp" => 11.4
+      })
+
+    todo_conn = post_graphql(conn, @todo_query, %{"id" => todo.id})
+
+    assert %{
+             "data" => %{
+               "todo" => %{
+                 "id" => todo_id,
+                 "title" => "Trace a single record",
+                 "estimatedTime" => "2026-04-23T07:45:00Z",
+                 "completed" => false,
+                 "completedAt" => nil
+               }
+             }
+           } = json_response(todo_conn, 200)
+
+    assert todo_id == Integer.to_string(todo.id)
+
+    weather_conn = build_conn() |> post_graphql(@weather_day_query, %{"id" => weather_day.id})
+
+    assert %{
+             "data" => %{
+               "weatherDay" => %{
+                 "id" => weather_day_id,
+                 "date" => "2026-04-23",
+                 "highTemp" => 22.3,
+                 "lowTemp" => 11.4
+               }
+             }
+           } = json_response(weather_conn, 200)
+
+    assert weather_day_id == Integer.to_string(weather_day.id)
   end
 
   defp post_graphql(conn, query, variables \\ %{}) do
