@@ -213,6 +213,37 @@ defmodule TodoApiWeb.GraphQLTest do
     assert weather_day_id == Integer.to_string(weather_day.id)
   end
 
+  test "returns graphql errors for missing records and invalid todo input", %{conn: conn} do
+    missing_todo_conn = post_graphql(conn, @todo_query, %{"id" => 999_999})
+
+    assert %{
+             "data" => %{"todo" => nil},
+             "errors" => [%{"message" => "Todo not found."}]
+           } = json_response(missing_todo_conn, 200)
+
+    missing_weather_conn = build_conn() |> post_graphql(@weather_day_query, %{"id" => 999_999})
+
+    assert %{
+             "data" => %{"weatherDay" => nil},
+             "errors" => [%{"message" => "Weather record not found."}]
+           } = json_response(missing_weather_conn, 200)
+
+    invalid_todo_conn =
+      build_conn()
+      |> post_graphql(@create_todo_mutation, %{
+        "input" => %{
+          "title" => nil,
+          "estimatedTime" => "2026-04-22T09:30:00Z",
+          "completed" => false
+        }
+      })
+
+    assert %{"errors" => [%{"message" => message}]} = json_response(invalid_todo_conn, 200)
+
+    assert message =~ "title"
+    assert message =~ "Expected type"
+  end
+
   defp post_graphql(conn, query, variables \\ %{}) do
     conn
     |> put_req_header("accept", "application/json")
