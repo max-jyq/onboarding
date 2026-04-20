@@ -25,7 +25,6 @@ defmodule TodoApiWeb.Router do
     pipe_through :api
 
     forward "/graphql", Absinthe.Plug, schema: TodoApiWeb.Schema
-    resources "/weather", WeatherController, only: [:index, :show]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
