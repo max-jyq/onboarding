@@ -36,8 +36,8 @@ export function WeatherListPage() {
           Daily weather snapshots from Phoenix.
         </h1>
         <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-600">
-          This page reads the weather records stored by your backend so you can compare another
-          domain next to todos.
+          This page reads the weather records through your Absinthe GraphQL API so you can
+          compare another domain next to todos.
         </p>
       </section>
 
