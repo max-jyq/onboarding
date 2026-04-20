@@ -25,6 +25,7 @@ defmodule TodoApiWeb.Router do
     pipe_through :api
 
     resources "/todos", TodoController, except: [:new, :edit]
+    resources "/weather", WeatherController, only: [:index, :show]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
