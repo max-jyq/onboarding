@@ -51,8 +51,8 @@ export function TodoWorkspace() {
               Keep the Phoenix backend honest with a real UI.
             </h1>
             <p className="mt-3 text-base leading-7 text-zinc-600">
-              This page reads, creates, and deletes todos through your Phoenix API so you can
-              see the full Next.js to backend flow.
+              This page reads, creates, and deletes todos through your Absinthe GraphQL API so
+              you can see the full Next.js to backend flow.
             </p>
           </div>
           <Link
