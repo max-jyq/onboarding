@@ -1,4 +1,4 @@
-import { AppShell } from "@/components/layout/AppShell";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { TodoDetailCard } from "@/features/todos/components/TodoDetailCard";
 
 type TodoDetailPageProps = {
@@ -9,11 +9,12 @@ export default async function TodoDetailPage({ params }: TodoDetailPageProps) {
   const { id } = await params;
 
   return (
-    <AppShell
+    <DashboardLayout
+      eyebrow="Todo"
       title="Todo detail"
       subtitle="Dynamic routes in Next.js let you create one page component that can render every todo record."
     >
       <TodoDetailCard todoId={id} />
-    </AppShell>
+    </DashboardLayout>
   );
 }

@@ -1,4 +1,4 @@
-import { AppShell } from "@/components/layout/AppShell";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { WeatherDetailCard } from "@/features/weather/components/WeatherDetailCard";
 
 type WeatherDetailPageProps = {
@@ -9,11 +9,12 @@ export default async function WeatherDetailPage({ params }: WeatherDetailPagePro
   const { id } = await params;
 
   return (
-    <AppShell
+    <DashboardLayout
+      eyebrow="Weather"
       title="Weather detail"
       subtitle="This page mirrors the todo detail route so the project structure stays predictable across domains."
     >
       <WeatherDetailCard weatherDayId={id} />
-    </AppShell>
+    </DashboardLayout>
   );
 }

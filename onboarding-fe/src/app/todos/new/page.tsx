@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { AppShell } from "@/components/layout/AppShell";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { TodoForm } from "@/features/todos/components/TodoForm";
 import { createTodo } from "@/features/todos/lib/api";
 
@@ -20,13 +20,14 @@ export default function NewTodoPage() {
   }
 
   return (
-    <AppShell
+    <DashboardLayout
+      eyebrow="Create"
       title="Create todo"
       subtitle="This page is intentionally separate from the list so you can feel how App Router pages map to product screens."
     >
       <div className="max-w-2xl">
         <TodoForm submitLabel="Create todo" onSubmit={handleSubmit} />
       </div>
-    </AppShell>
+    </DashboardLayout>
   );
 }
