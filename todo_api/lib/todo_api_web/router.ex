@@ -21,7 +21,7 @@ defmodule TodoApiWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  scope "/api", TodoApiWeb do
+  scope "/api" do
     pipe_through :api
 
     forward "/graphql", Absinthe.Plug, schema: TodoApiWeb.Schema
