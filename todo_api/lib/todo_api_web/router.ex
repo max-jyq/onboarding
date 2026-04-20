@@ -25,7 +25,6 @@ defmodule TodoApiWeb.Router do
     pipe_through :api
 
     forward "/graphql", Absinthe.Plug, schema: TodoApiWeb.Schema
-    resources "/todos", TodoController, except: [:new, :edit]
     resources "/weather", WeatherController, only: [:index, :show]
   end
 
