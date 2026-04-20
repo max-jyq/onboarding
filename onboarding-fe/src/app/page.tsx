@@ -54,9 +54,8 @@ function getLatestWeather(weatherDays: WeatherDay[]) {
 }
 
 const todoTabs = [
-  { id: "all", label: "All" },
-  { id: "completed", label: "Completed" },
   { id: "open", label: "Open" },
+  { id: "completed", label: "Completed" },
 ] as const;
 
 export default function Home() {
@@ -153,12 +152,7 @@ export default function Home() {
   const orderedTodos = sortTodos(todos);
   const openTodos = orderedTodos.filter((todo) => !todo.completed);
   const completedTodos = orderedTodos.filter((todo) => todo.completed);
-  const visibleTodos =
-    activeTab === "all"
-      ? orderedTodos
-      : activeTab === "completed"
-        ? completedTodos
-        : openTodos;
+  const visibleTodos = activeTab === "completed" ? completedTodos : openTodos;
 
   return (
     <DashboardLayout
@@ -167,7 +161,7 @@ export default function Home() {
     >
       <div className="space-y-6">
         <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-          <article className="rounded-4xl p-6 shadow-sm">
+          <article className="rounded-4xl border border-zinc-300 p-6 shadow-sm">
             <p className="text-xs font-medium uppercase tracking-[0.24em] text-zinc-300">
               Local time
             </p>
@@ -235,14 +229,14 @@ export default function Home() {
                 Everything below stays focused on the list.
               </h2>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="flex rounded-full border border-zinc-200 bg-zinc-100 p-1">
+            <div className="flex flex-col gap-2 sm:ml-auto sm:grid sm:grid-cols-[12rem_9.5rem] sm:items-center sm:gap-2">
+              <div className="grid w-full grid-cols-2 rounded-full border border-zinc-200 bg-zinc-100 p-1 sm:w-48">
                 {todoTabs.map((tab) => (
                   <button
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
-                    className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                    className={`w-full rounded-full px-4 py-2 text-center text-sm font-medium transition ${
                       activeTab === tab.id
                         ? "bg-white text-zinc-950 shadow-sm"
                         : "text-zinc-500 hover:text-zinc-900"
@@ -252,12 +246,10 @@ export default function Home() {
                   </button>
                 ))}
               </div>
-              <p className="text-sm text-zinc-500">
-                {activeTab === "all"
-                  ? `${orderedTodos.length} items`
-                  : activeTab === "completed"
-                    ? `${completedTodos.length} completed items`
-                    : `${openTodos.length} open items`}
+              <p className="w-full text-sm text-zinc-500 sm:w-[9.5rem] sm:text-right">
+                {activeTab === "completed"
+                  ? `${completedTodos.length} completed items`
+                  : `${openTodos.length} open items`}
               </p>
             </div>
           </div>
@@ -273,11 +265,7 @@ export default function Home() {
               </div>
             ) : visibleTodos.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-zinc-300 bg-zinc-50 p-10 text-center text-zinc-500">
-                {activeTab === "all"
-                  ? "No todos yet."
-                  : activeTab === "completed"
-                    ? "No completed todos."
-                    : "No open todos."}
+                {activeTab === "completed" ? "No completed todos." : "No open todos."}
               </div>
             ) : (
               <ul className="space-y-3">
@@ -289,7 +277,10 @@ export default function Home() {
                       key={todo.id}
                       className="flex flex-col gap-4 rounded-3xl border border-zinc-200 bg-zinc-50 p-5 sm:flex-row sm:items-center sm:justify-between"
                     >
-                      <div>
+                      <Link
+                        href={`/todos/${todo.id}`}
+                        className="block flex-1 rounded-2xl outline-none transition hover:opacity-75 focus-visible:ring-2 focus-visible:ring-zinc-300"
+                      >
                         <div className="flex flex-wrap items-center gap-3">
                           <h3 className="text-lg font-semibold text-zinc-950">{todo.title}</h3>
                           <span
@@ -305,7 +296,7 @@ export default function Home() {
                         <p className="mt-2 text-sm text-zinc-500">
                           Scheduled for {formatTodoDate(todo.estimated_time)}
                         </p>
-                      </div>
+                      </Link>
 
                       <div className="flex flex-wrap gap-2">
                         {!todo.completed ? (
@@ -330,18 +321,6 @@ export default function Home() {
                             ? "Deleting..."
                             : "Delete"}
                         </button>
-                        <Link
-                          href={`/todos/${todo.id}`}
-                          className="rounded-full border border-zinc-300 px-4 py-2 text-sm text-zinc-700 transition hover:border-zinc-500 hover:text-zinc-950"
-                        >
-                          View
-                        </Link>
-                        <Link
-                          href={`/todos/${todo.id}/edit`}
-                          className="rounded-full border border-zinc-300 px-4 py-2 text-sm text-zinc-700 transition hover:border-zinc-500 hover:text-zinc-950"
-                        >
-                          Edit
-                        </Link>
                       </div>
                     </li>
                   );
