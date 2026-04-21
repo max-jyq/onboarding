@@ -27,4 +27,25 @@ defmodule TodoApi.TodosTest do
     assert result.id == incomplete_todo.id
     refute result.id == completed_todo.id
   end
+
+  test "complete_todos_due_now/1 marks only todos in the same minute as complete" do
+    now = ~U[2026-04-21 10:30:45Z]
+
+    {:ok, due_a} = Todos.create_todo(%{title: "Due A", estimated_time: ~U[2026-04-21 10:30:00Z]})
+    {:ok, due_b} = Todos.create_todo(%{title: "Due B", estimated_time: ~U[2026-04-21 10:30:59Z]})
+    {:ok, past} = Todos.create_todo(%{title: "Past", estimated_time: ~U[2026-04-21 10:29:59Z]})
+
+    {:ok, future} =
+      Todos.create_todo(%{title: "Future", estimated_time: ~U[2026-04-21 10:31:00Z]})
+
+    {:ok, no_time} = Todos.create_todo(%{title: "No Time"})
+
+    assert {:ok, 2} = Todos.complete_todos_due_now(now)
+
+    assert Todos.get_todo!(due_a.id).completed
+    assert Todos.get_todo!(due_b.id).completed
+    refute Todos.get_todo!(past.id).completed
+    refute Todos.get_todo!(future.id).completed
+    refute Todos.get_todo!(no_time.id).completed
+  end
 end
