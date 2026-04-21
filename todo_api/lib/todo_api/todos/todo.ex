@@ -19,7 +19,7 @@ defmodule TodoApi.Todos.Todo do
   # Builds a changeset for creating or updating a todo.
   def changeset(todo, attrs) do
     todo
-    # 从外部数据里挑出允许的字段，并尝试转换成正确类型
+    # Keep only allowed fields from external input and cast to expected types.
     |> cast(attrs, [:title, :estimated_time, :completed, :completed_at])
     |> validate_required([:title])
     |> sync_completed_at()
