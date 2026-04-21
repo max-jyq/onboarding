@@ -87,4 +87,27 @@ defmodule TodoApi.Todos do
   def change_todo(%Todo{} = todo, attrs \\ %{}) do
     Todo.changeset(todo, attrs)
   end
+
+  # Mark todos as completed when estimated_time falls within the same minute as now.
+  def complete_todos_due_now(now \\ DateTime.utc_now()) do
+    # truncate 把时间精确到秒
+    minute_start = now |> DateTime.truncate(:second) |> then(&%{&1 | second: 0})
+    minute_end = DateTime.add(minute_start, 60, :second)
+    completed_at = DateTime.truncate(now, :second)
+
+    {updated_count, _} = #
+      Repo.update_all(
+        from(
+          t in Todo,
+          where:
+            t.completed == false and
+              not is_nil(t.estimated_time) and
+              t.estimated_time >= ^minute_start and
+              t.estimated_time < ^minute_end
+        ),
+        set: [completed: true, completed_at: completed_at]
+      )
+
+    {:ok, updated_count}
+  end
 end
