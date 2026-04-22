@@ -2,6 +2,7 @@ import { graphqlRequest } from "@/lib/api-client";
 
 import type { Todo, TodoListResponse, TodoPayload, TodoResponse } from "../types";
 
+// type是定义 后端返回的数据长啥样
 type GraphQLTodo = {
   id: string | number;
   title: string;
@@ -12,6 +13,7 @@ type GraphQLTodo = {
   updatedAt?: string | null;
 };
 
+// 把后端格式转换为前端用的格式
 function mapTodo(todo: GraphQLTodo): Todo {
   return {
     id: Number(todo.id),
@@ -24,6 +26,7 @@ function mapTodo(todo: GraphQLTodo): Todo {
   };
 }
 
+// 把前端格式换成后端格式
 function toTodoInput(payload: TodoPayload) {
   return {
     title: payload.title,
@@ -32,8 +35,11 @@ function toTodoInput(payload: TodoPayload) {
   };
 }
 
+//
 export async function listTodos(): Promise<TodoListResponse> {
+  //先拿数据
   const data = await graphqlRequest<{ todos: GraphQLTodo[] }>(`
+    // 只要这些字段
     query ListTodos {
       todos {
         id
@@ -46,8 +52,7 @@ export async function listTodos(): Promise<TodoListResponse> {
       }
     }
   `);
-
-  return { data: data.todos.map(mapTodo) };
+  return { data: data.todos.map(mapTodo) };//每个todo都要数据转换再返回
 }
 
 export async function getTodo(id: string | number): Promise<TodoResponse> {
@@ -77,6 +82,7 @@ export async function getTodo(id: string | number): Promise<TodoResponse> {
 
 export async function createTodo(payload: TodoPayload): Promise<TodoResponse> {
   const data = await graphqlRequest<{ createTodo: GraphQLTodo }, { input: ReturnType<typeof toTodoInput> }>(
+    // query查，mutation是改
     `
       mutation CreateTodo($input: TodoInput!) {
         createTodo(input: $input) {

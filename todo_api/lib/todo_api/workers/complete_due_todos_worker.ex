@@ -1,14 +1,20 @@
 defmodule TodoApi.Workers.CompleteDueTodosWorker do
   use Oban.Worker, queue: :default
 
+  require Logger
+
   alias Oban.Job
   alias TodoApi.Todos
 
   @impl Oban.Worker
-  # map形式
   def perform(%Job{args: args}) do
-    now = now_from_args(args) # 
-    {:ok, _updated_count} = Todos.complete_todos_due_now(now)
+    now = now_from_args(args)
+    {:ok, updated_count} = Todos.complete_todos_due_now(now)
+
+    Logger.info(
+      "CompleteDueTodosWorker tick now=#{DateTime.to_iso8601(now)} updated_count=#{updated_count}"
+    )
+
     :ok
   end
 
@@ -19,6 +25,5 @@ defmodule TodoApi.Workers.CompleteDueTodosWorker do
     end
   end
 
-  # fallback 如果没有有效run_at
   defp now_from_args(_args), do: DateTime.utc_now()
 end
