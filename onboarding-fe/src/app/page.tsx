@@ -47,10 +47,21 @@ function sortTodos(todos: Todo[]) {
   });
 }
 
-function getLatestWeather(weatherDays: WeatherDay[]) {
-  return [...weatherDays].sort(
-    (left, right) => new Date(right.date).getTime() - new Date(left.date).getTime(),
-  )[0];
+function toSydneyDateKey(value: Date) {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Australia/Sydney",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+  return formatter.format(value);
+}
+
+function getTodayWeather(weatherDays: WeatherDay[], now: Date) {
+  const today = toSydneyDateKey(now);
+
+  return weatherDays.find((weatherDay) => weatherDay.date === today);
 }
 
 function isTodoOverdue(todo: Todo, now: Date) {
@@ -175,7 +186,7 @@ export default function Home() {
     }
   }
 
-  const latestWeather = getLatestWeather(weatherDays);
+  const todayWeather = getTodayWeather(weatherDays, now);
   const orderedTodos = sortTodos(todos);
   const openTodos = orderedTodos.filter((todo) => !todo.completed && !isTodoOverdue(todo, now));
   const overdueTodos = orderedTodos.filter((todo) => isTodoOverdue(todo, now));
@@ -207,7 +218,7 @@ export default function Home() {
                   Weather
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950">
-                  Latest snapshot
+                  Today
                 </h2>
               </div>
               <Link
@@ -223,20 +234,20 @@ export default function Home() {
                 <p className="text-zinc-500">Loading weather...</p>
               ) : weatherError ? (
                 <p className="text-red-700">{weatherError}</p>
-              ) : latestWeather ? (
+              ) : todayWeather ? (
                 <>
-                  <p className="text-sm text-zinc-500">{formatWeatherDate(latestWeather.date)}</p>
+                  <p className="text-sm text-zinc-500">{formatWeatherDate(todayWeather.date)}</p>
                   <div className="mt-4 flex items-end gap-6">
                     <div>
                       <p className="text-sm uppercase tracking-[0.2em] text-zinc-400">High</p>
                       <p className="text-4xl font-semibold tracking-tight text-zinc-950">
-                        {latestWeather.high_temp}°C
+                        {todayWeather.high_temp}°C
                       </p>
                     </div>
                     <div>
                       <p className="text-sm uppercase tracking-[0.2em] text-zinc-400">Low</p>
                       <p className="text-3xl font-semibold tracking-tight text-zinc-700">
-                        {latestWeather.low_temp}°C
+                        {todayWeather.low_temp}°C
                       </p>
                     </div>
                   </div>
