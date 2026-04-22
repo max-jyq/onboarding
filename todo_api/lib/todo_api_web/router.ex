@@ -23,7 +23,6 @@ defmodule TodoApiWeb.Router do
     plug :accepts, ["json"]
   end
 
-
   # 把不同的路径给不同的controller处理
   # scope是路径前缀，pipe_through是使用哪个pipeline
   # todoapiweb是controller所在的命名空间

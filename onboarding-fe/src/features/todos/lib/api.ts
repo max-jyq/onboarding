@@ -38,8 +38,9 @@ function toTodoInput(payload: TodoPayload) {
 //
 export async function listTodos(): Promise<TodoListResponse> {
   //先拿数据
-  const data = await graphqlRequest<{ todos: GraphQLTodo[] }>(`
+  const data = await graphqlRequest<{ todos: GraphQLTodo[] }>(
     // 只要这些字段
+    `
     query ListTodos {
       todos {
         id

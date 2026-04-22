@@ -53,8 +53,23 @@ function getLatestWeather(weatherDays: WeatherDay[]) {
   )[0];
 }
 
+function isTodoOverdue(todo: Todo, now: Date) {
+  if (todo.completed || !todo.estimated_time) {
+    return false;
+  }
+
+  const dueAt = new Date(todo.estimated_time).getTime();
+
+  if (Number.isNaN(dueAt)) {
+    return false;
+  }
+
+  return dueAt < now.getTime();
+}
+
 const todoTabs = [
   { id: "open", label: "Open" },
+  { id: "overdue", label: "Overdue" },
   { id: "completed", label: "Completed" },
 ] as const;
 
@@ -162,9 +177,11 @@ export default function Home() {
 
   const latestWeather = getLatestWeather(weatherDays);
   const orderedTodos = sortTodos(todos);
-  const openTodos = orderedTodos.filter((todo) => !todo.completed);
+  const openTodos = orderedTodos.filter((todo) => !todo.completed && !isTodoOverdue(todo, now));
+  const overdueTodos = orderedTodos.filter((todo) => isTodoOverdue(todo, now));
   const completedTodos = orderedTodos.filter((todo) => todo.completed);
-  const visibleTodos = activeTab === "completed" ? completedTodos : openTodos;
+  const visibleTodos =
+    activeTab === "completed" ? completedTodos : activeTab === "overdue" ? overdueTodos : openTodos;
 
   return (
     <DashboardLayout
@@ -241,8 +258,8 @@ export default function Home() {
                 Everything below stays focused on the list.
               </h2>
             </div>
-            <div className="flex flex-col gap-2 sm:ml-auto sm:grid sm:grid-cols-[12rem_9.5rem] sm:items-center sm:gap-2">
-              <div className="grid w-full grid-cols-2 rounded-full border border-zinc-200 bg-zinc-100 p-1 sm:w-48">
+            <div className="flex flex-col gap-2 sm:ml-auto sm:grid sm:grid-cols-[16.5rem_9.5rem] sm:items-center sm:gap-2">
+              <div className="grid w-full grid-cols-3 rounded-full border border-zinc-200 bg-zinc-100 p-1 sm:w-[16.5rem]">
                 {todoTabs.map((tab) => (
                   <button
                     key={tab.id}
@@ -261,7 +278,9 @@ export default function Home() {
               <p className="w-full text-sm text-zinc-500 sm:w-[9.5rem] sm:text-right">
                 {activeTab === "completed"
                   ? `${completedTodos.length} completed items`
-                  : `${openTodos.length} open items`}
+                  : activeTab === "overdue"
+                    ? `${overdueTodos.length} overdue items`
+                    : `${openTodos.length} open items`}
               </p>
             </div>
           </div>
@@ -277,12 +296,17 @@ export default function Home() {
               </div>
             ) : visibleTodos.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-zinc-300 bg-zinc-50 p-10 text-center text-zinc-500">
-                {activeTab === "completed" ? "No completed todos." : "No open todos."}
+                {activeTab === "completed"
+                  ? "No completed todos."
+                  : activeTab === "overdue"
+                    ? "No overdue todos."
+                    : "No open todos."}
               </div>
             ) : (
               <ul className="space-y-3">
                 {visibleTodos.map((todo) => {
                   const isActingOnTodo = activeTodoId === todo.id;
+                  const overdue = isTodoOverdue(todo, now);
 
                   return (
                     <li
@@ -299,10 +323,12 @@ export default function Home() {
                             className={`rounded-full px-3 py-1 text-xs font-medium ${
                               todo.completed
                                 ? "bg-emerald-100 text-emerald-700"
-                                : "bg-amber-100 text-amber-700"
+                                : overdue
+                                  ? "bg-red-100 text-red-700"
+                                  : "bg-amber-100 text-amber-700"
                             }`}
                           >
-                            {todo.completed ? "Completed" : "Open"}
+                            {todo.completed ? "Completed" : overdue ? "Overdue" : "Open"}
                           </span>
                         </div>
                         <p className="mt-2 text-sm text-zinc-500">
