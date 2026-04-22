@@ -91,7 +91,7 @@ defmodule TodoApiWeb.GraphQLTest do
                    "title" => "Learn GraphQL",
                    "estimatedTime" => "2026-04-21T08:00:00Z",
                    "completed" => false
-                  }
+                 }
                ],
                "weatherDays" => [
                  %{
