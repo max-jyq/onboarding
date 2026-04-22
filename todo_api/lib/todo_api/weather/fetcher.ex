@@ -1,5 +1,5 @@
 defmodule TodoApi.Weather.Fetcher do
-  # https://api.open-meteo.com/v1/forecast?latitude=-37.814&longitude=144.9633&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Australia%2FSydney&past_days=1&forecast_days=3
+  # https://api.open-meteo.com/v1/forecast?latitude=-37.814&longitude=144.9633&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Australia%2FSydney&past_days=1&forecast_days=4
   @url "https://api.open-meteo.com/v1/forecast"
   @melbourne_lat -37.814
   @melbourne_lon 144.9633
@@ -12,7 +12,7 @@ defmodule TodoApi.Weather.Fetcher do
       daily: "weather_code,temperature_2m_max,temperature_2m_min",
       timezone: "Australia/Sydney",
       past_days: 1,
-      forecast_days: 3
+      forecast_days: 4
     ]
 
     # get请求 发到@url地址，携带params参数
