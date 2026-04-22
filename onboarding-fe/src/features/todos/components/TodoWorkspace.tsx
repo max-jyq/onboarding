@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { createTodo, deleteTodo, listTodos } from "../lib/api";
@@ -40,29 +39,31 @@ export function TodoWorkspace() {
   }
 
   return (
-    <div className="space-y-8">
-      <section className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+    <div className="flex flex-col gap-8 xl:h-full">
+      <section className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] xl:min-h-0 xl:flex-1">
         <div>
           <h2 className="mb-4 text-lg font-semibold text-zinc-900">Quick add</h2>
           <TodoForm submitLabel="Add todo" onSubmit={handleCreate} />
         </div>
 
-        <div>
+        <div className="flex flex-col xl:min-h-0">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-zinc-900">All todos</h2>
             <p className="text-sm text-zinc-500">{todos.length} items</p>
           </div>
-          {loading ? (
-            <div className="rounded-3xl border border-zinc-200 bg-white p-8 text-zinc-500 shadow-sm">
-              Loading todos...
-            </div>
-          ) : error ? (
-            <div className="rounded-3xl border border-red-200 bg-red-50 p-8 text-red-700">
-              {error}
-            </div>
-          ) : (
-            <TodoList todos={todos} onDelete={handleDelete} />
-          )}
+          <div className="max-h-[60vh] overflow-y-auto pr-1 xl:max-h-none xl:min-h-0 xl:flex-1">
+            {loading ? (
+              <div className="rounded-3xl border border-zinc-200 bg-white p-8 text-zinc-500 shadow-sm">
+                Loading todos...
+              </div>
+            ) : error ? (
+              <div className="rounded-3xl border border-red-200 bg-red-50 p-8 text-red-700">
+                {error}
+              </div>
+            ) : (
+              <TodoList todos={todos} onDelete={handleDelete} />
+            )}
+          </div>
         </div>
       </section>
     </div>

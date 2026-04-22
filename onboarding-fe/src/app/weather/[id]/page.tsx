@@ -12,7 +12,6 @@ export default async function WeatherDetailPage({ params }: WeatherDetailPagePro
     <DashboardLayout
       eyebrow="Weather"
       title="Weather detail"
-      subtitle="This page mirrors the todo detail route so the project structure stays predictable across domains."
     >
       <WeatherDetailCard weatherDayId={id} />
     </DashboardLayout>
