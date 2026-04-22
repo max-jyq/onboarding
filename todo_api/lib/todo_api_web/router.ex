@@ -22,6 +22,10 @@ defmodule TodoApiWeb.Router do
 
   # Other scopes may use custom stacks.
   scope "/api" do
+    get "/todos/stream", TodoApiWeb.TodoEventsController, :stream
+  end
+
+  scope "/api" do
     pipe_through :api
 
     forward "/graphql", Absinthe.Plug, schema: TodoApiWeb.Schema

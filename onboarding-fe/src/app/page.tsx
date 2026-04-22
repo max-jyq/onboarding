@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { deleteTodo, formatTodoDate, listTodos, updateTodo } from "@/features/todos/lib/api";
@@ -70,7 +70,7 @@ export default function Home() {
   const [activeTodoAction, setActiveTodoAction] = useState<"complete" | "delete" | null>(null);
   const [activeTab, setActiveTab] = useState<(typeof todoTabs)[number]["id"]>("open");
 
-  async function loadTodos() {
+  const loadTodos = useCallback(async () => {
     setLoadingTodos(true);
 
     try {
@@ -82,9 +82,9 @@ export default function Home() {
     } finally {
       setLoadingTodos(false);
     }
-  }
+  }, []);
 
-  async function loadWeather() {
+  const loadWeather = useCallback(async () => {
     setLoadingWeather(true);
     try {
       const result = await listWeatherDays();
@@ -95,7 +95,7 @@ export default function Home() {
     } finally {
       setLoadingWeather(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -108,7 +108,19 @@ export default function Home() {
   useEffect(() => {
     loadTodos();
     loadWeather();
-  }, []);
+  }, [loadTodos, loadWeather]);
+
+  useEffect(() => {
+    const events = new EventSource("/api/todos/stream");
+
+    events.addEventListener("todos_changed", () => {
+      loadTodos();
+    });
+
+    return () => {
+      events.close();
+    };
+  }, [loadTodos]);
 
   async function handleComplete(todo: Todo) {
     setActiveTodoId(todo.id);

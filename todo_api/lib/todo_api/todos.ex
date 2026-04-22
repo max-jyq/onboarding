@@ -11,6 +11,8 @@ defmodule TodoApi.Todos do
   alias TodoApi.Repo
   alias TodoApi.Todos.Todo
 
+  @todos_pubsub_topic "todos:events"
+
   # Return all todos sorted by creation time ascending.
   def list_todos do
     Repo.all(from t in Todo, order_by: [asc: t.inserted_at])
@@ -32,22 +34,43 @@ defmodule TodoApi.Todos do
   # Create a new todo.
   # attrs is external input and defaults to an empty map.
   def create_todo(attrs \\ %{}) do
-    %Todo{}
-    |> Todo.changeset(attrs)
-    |> Repo.insert()
+    case %Todo{}
+         |> Todo.changeset(attrs)
+         |> Repo.insert() do
+      {:ok, todo} = result ->
+        broadcast_todos_changed(:created, %{todo_id: todo.id})
+        result
+
+      error ->
+        error
+    end
   end
 
   # Update an existing todo.
   # %Todo{} = todo enforces a Todo struct argument.
   def update_todo(%Todo{} = todo, attrs) do
-    todo
-    |> Todo.changeset(attrs)
-    |> Repo.update()
+    case todo
+         |> Todo.changeset(attrs)
+         |> Repo.update() do
+      {:ok, updated_todo} = result ->
+        broadcast_todos_changed(:updated, %{todo_id: updated_todo.id})
+        result
+
+      error ->
+        error
+    end
   end
 
   # Delete a todo.
   def delete_todo(%Todo{} = todo) do
-    Repo.delete(todo)
+    case Repo.delete(todo) do
+      {:ok, deleted_todo} = result ->
+        broadcast_todos_changed(:deleted, %{todo_id: deleted_todo.id})
+        result
+
+      error ->
+        error
+    end
   end
 
   # Mark a todo as completed and set completed_at.
@@ -90,12 +113,12 @@ defmodule TodoApi.Todos do
 
   # Mark todos as completed when estimated_time falls within the same minute as now.
   def complete_todos_due_now(now \\ DateTime.utc_now()) do
-    # truncate 把时间精确到秒
+    # Compare within minute precision: [minute_start, minute_end).
     minute_start = now |> DateTime.truncate(:second) |> then(&%{&1 | second: 0})
     minute_end = DateTime.add(minute_start, 60, :second)
     completed_at = DateTime.truncate(now, :second)
 
-    {updated_count, _} = #
+    {updated_count, _} =
       Repo.update_all(
         from(
           t in Todo,
@@ -108,6 +131,18 @@ defmodule TodoApi.Todos do
         set: [completed: true, completed_at: completed_at]
       )
 
+    if updated_count > 0 do
+      broadcast_todos_changed(:completed_due, %{updated_count: updated_count})
+    end
+
     {:ok, updated_count}
+  end
+
+  defp broadcast_todos_changed(reason, metadata) do
+    Phoenix.PubSub.broadcast(
+      TodoApi.PubSub,
+      @todos_pubsub_topic,
+      {:todos_changed, Map.put(metadata, :reason, reason)}
+    )
   end
 end
