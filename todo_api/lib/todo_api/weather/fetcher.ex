@@ -1,5 +1,5 @@
 defmodule TodoApi.Weather.Fetcher do
-  # https://api.open-meteo.com/v1/forecast?latitude=-37.814&longitude=144.9633&hourly=temperature_2m&timezone=Australia%2FSydney&past_days=1&forecast_days=3
+  # https://api.open-meteo.com/v1/forecast?latitude=-37.814&longitude=144.9633&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Australia%2FSydney&past_days=1&forecast_days=3
   @url "https://api.open-meteo.com/v1/forecast"
   @melbourne_lat -37.814
   @melbourne_lon 144.9633

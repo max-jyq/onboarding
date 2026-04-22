@@ -65,6 +65,7 @@ config :todo_api, Oban,
   repo: TodoApi.Repo,
   plugins: [
     {Oban.Plugins.Cron,
+     timezone: "Australia/Melbourne",
      crontab: [
        {"* * * * *", TodoApi.Workers.CompleteDueTodosWorker},
        {"0 0 * * *", TodoApi.Workers.FetchWeatherWorker}
