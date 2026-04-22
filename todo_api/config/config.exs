@@ -60,11 +60,15 @@ config :logger, :default_formatter,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Enable IANA timezone names like Australia/Sydney.
+config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
+
 # Tell Oban how to find the repo and which plugins and queues to use
 config :todo_api, Oban,
   repo: TodoApi.Repo,
   plugins: [
     {Oban.Plugins.Cron,
+     timezone: "Australia/Sydney",
      crontab: [
        {"* * * * *", TodoApi.Workers.CompleteDueTodosWorker},
        {"0 0 * * *", TodoApi.Workers.FetchWeatherWorker}
