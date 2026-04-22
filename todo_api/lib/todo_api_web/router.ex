@@ -1,22 +1,35 @@
 defmodule TodoApiWeb.Router do
   use TodoApiWeb, :router
 
+  # pipeline 是流水线，请求->进入相应piepline以及plug->controller
+  # browser 以下的中间件会在浏览器访问时被使用（网页请求）
   pipeline :browser do
+    # 接受html请求
     plug :accepts, ["html"]
+    # 从session中获取数据
     plug :fetch_session
+    # 读取一次性提示消息比如登陆成功/操作失败
     plug :fetch_live_flash
+    # 给页面套一个外壳，可以统一header/footer
     plug :put_root_layout, html: {TodoApiWeb.Layouts, :root}
+    # 防止csrf攻击（防止别的网站偷偷帮用户发送请求）
     plug :protect_from_forgery
+    # 加安全头（防止xss）
     plug :put_secure_browser_headers
   end
 
+  # api以下的中间件会在api请求时使用
   pipeline :api do
     plug :accepts, ["json"]
   end
 
+
+  # 把不同的路径给不同的controller处理
+  # scope是路径前缀，pipe_through是使用哪个pipeline
+  # todoapiweb是controller所在的命名空间
   scope "/", TodoApiWeb do
     pipe_through :browser
-
+    # get "/" 是访问根路径，PageController是控制器，:home是控制器里的函数
     get "/", PageController, :home
   end
 
