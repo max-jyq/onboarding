@@ -6,7 +6,6 @@ export default function TodosPage() {
     <DashboardLayout
       eyebrow="Todos"
       title="Todos"
-      subtitle="A dedicated route for manual CRUD, with room to grow into filters, detail views, and editing."
     >
       <TodoWorkspace />
     </DashboardLayout>
