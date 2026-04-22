@@ -254,9 +254,6 @@ export default function Home() {
               <p className="text-xs font-medium uppercase tracking-[0.24em] text-zinc-500">
                 Todos
               </p>
-              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-950">
-                Everything below stays focused on the list.
-              </h2>
             </div>
             <div className="flex flex-col gap-2 sm:ml-auto sm:grid sm:grid-cols-[16.5rem_9.5rem] sm:items-center sm:gap-2">
               <div className="grid w-full grid-cols-3 rounded-full border border-zinc-200 bg-zinc-100 p-1 sm:w-[16.5rem]">
@@ -275,7 +272,7 @@ export default function Home() {
                   </button>
                 ))}
               </div>
-              <p className="w-full text-sm text-zinc-500 sm:w-[9.5rem] sm:text-right">
+              <p className="w-full text-sm text-zinc-500 sm:w-38 sm:text-right">
                 {activeTab === "completed"
                   ? `${completedTodos.length} completed items`
                   : activeTab === "overdue"
