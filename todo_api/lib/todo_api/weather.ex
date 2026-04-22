@@ -46,18 +46,6 @@ defmodule TodoApi.Weather do
     WeatherDay.changeset(weather_day, attrs)
   end
 
-  # 核心逻辑：同一天只保留一条。
-  # 没有就插入，有了就更新，省得撞 unique(date)。
-  def upsert_weather_day(%{date: date} = attrs) do
-    case get_weather_day_by_date(date) do
-      nil ->
-        create_weather_day(attrs)
-
-      weather_day ->
-        update_weather_day(weather_day, attrs)
-    end
-  end
-
   # 给 worker 用的统一入口：只管把一天的天气存进去。
   # 如果数据库里这天已经有记录，就直接覆盖高低温，不会新增重复行。
   def store_weather_day(attrs) do

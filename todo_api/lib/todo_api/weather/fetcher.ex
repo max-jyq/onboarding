@@ -29,21 +29,6 @@ defmodule TodoApi.Weather.Fetcher do
     end
   end
 
-  # 因为我想获取前三后一段天气，所以我需要获取当前日期，来判断是否在返回的天气数据中有当天的天气数据，如果有就返回，没有就报错
-  def fetch_melbourne_daily do
-    with {:ok, days} <- fetch_melbourne_days(),
-         {:ok, now} <- DateTime.now("Australia/Sydney") do
-      today = DateTime.to_date(now)
-
-      # enum和数据库里的enum不同。这里的enum是elixir里的一种数据结构，类似于列表或者map。
-      # 是enum Elixir 的一个模块，用来操作list
-      case Enum.find(days, &(&1.date == today)) do
-        nil -> {:error, :today_not_found}
-        day -> {:ok, day}
-      end
-    end
-  end
-
   # defp是private function， def是public
   defp parse_daily(%{
          "time" => times,
