@@ -30,16 +30,6 @@ export function WeatherListPage() {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-[2rem] bg-[radial-gradient(circle_at_top_left,_#dbeafe,_transparent_55%),linear-gradient(135deg,_#ffffff,_#f4f4f5)] p-8 shadow-sm ring-1 ring-zinc-200">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-zinc-500">Weather</p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-zinc-950">
-          Daily weather snapshots from Phoenix.
-        </h1>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-zinc-600">
-          This page reads the weather records through your Absinthe GraphQL API so you can
-          compare another domain next to todos.
-        </p>
-      </section>
 
       {loading ? (
         <div className="rounded-3xl border border-zinc-200 bg-white p-8 text-zinc-500 shadow-sm">
