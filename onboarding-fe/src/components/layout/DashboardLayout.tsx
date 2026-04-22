@@ -37,7 +37,7 @@ export function DashboardLayout({
 
   return (
     <main className="min-h-screen px-4 py-4 text-zinc-900 sm:px-6 sm:py-6">
-      <div className="grid min-h-[calc(100vh-2rem)] w-full gap-4 xl:grid-cols-[300px_minmax(0,1fr)]">
+      <div className="grid min-h-full w-full gap-4 xl:grid-cols-[300px_minmax(0,1fr)]">
         <aside className="flex flex-col justify-between rounded-4xl border border-zinc-200 p-6 text-zinc-900 shadow-[0_24px_80px_rgba(15,23,42,0.08)]">
           <div>
             <div className="flex items-center gap-3">
@@ -75,7 +75,7 @@ export function DashboardLayout({
         </aside>
 
         <section className="min-w-0 rounded-4xl border border-zinc-200 p-4 shadow-[0_24px_80px_rgba(15,23,42,0.08)] sm:p-6">
-          <header className="rounded-[1.75rem] border border-zinc-200 p-6">
+          <header className="rounded-4xl border border-zinc-200 p-6">
             <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium uppercase tracking-[0.28em] text-zinc-500">

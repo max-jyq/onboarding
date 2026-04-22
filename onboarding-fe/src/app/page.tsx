@@ -255,8 +255,8 @@ export default function Home() {
                 Todos
               </p>
             </div>
-            <div className="flex flex-col gap-2 sm:ml-auto sm:grid sm:grid-cols-[16.5rem_9.5rem] sm:items-center sm:gap-2">
-              <div className="grid w-full grid-cols-3 rounded-full border border-zinc-200 bg-zinc-100 p-1 sm:w-[16.5rem]">
+            <div className="flex flex-col gap-2 sm:ml-auto sm:flex sm:items-center sm:justify-end sm:gap-2">
+              <div className="grid w-full grid-cols-3 rounded-full border border-zinc-200 bg-zinc-100 p-1 sm:w-66">
                 {todoTabs.map((tab) => (
                   <button
                     key={tab.id}
